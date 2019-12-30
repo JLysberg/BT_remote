@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "zephyr.h": "c",
+        "hrs.h": "c",
+        "types.h": "c",
+        "errno.h": "c",
+        "string.h": "c",
+        "hci.h": "c",
+        "conn.h": "c",
+        "bluetooth.h": "c",
+        "bas.h": "c",
+        "kernel.h": "c",
+        "byteorder.h": "c",
+        "cts.h": "c",
+        "settings.h": "c"
+    }
+}

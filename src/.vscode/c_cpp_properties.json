@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "name": "Compile commands",
+            "includePath": [
+                "C:/Users/joste/zephyrproject/modules/debug/segger/rtt",
+                "C:/Users/joste/zephyrproject/modules/hal/nordic/.",
+                "C:/Users/joste/zephyrproject/modules/hal/nordic/nrfx",
+                "C:/Users/joste/zephyrproject/modules/hal/nordic/nrfx/drivers/include",
+                "C:/Users/joste/zephyrproject/modules/hal/nordic/nrfx/mdk",
+                "C:/Users/joste/zephyrproject/zephyr/ext/hal/cmsis/Core/Include",
+                "C:/Users/joste/zephyrproject/zephyr/ext/lib/crypto/tinycrypt/include",
+                "C:/Users/joste/zephyrproject/zephyr/include",
+                "C:/Users/joste/zephyrproject/zephyr/include/drivers",
+                "C:/Users/joste/zephyrproject/zephyr/soc/arm/nordic_nrf/nrf52",
+                "C:/Users/joste/zephyrproject/zephyr/subsys/bluetooth",
+                "C:/Users/joste/zephyrproject/zephyr/subsys/bluetooth/controller/ll_sw/nordic",
+                "C:/Users/joste/zephyrproject/zephyr/subsys/settings/include",
+                "zephyr/include/generated"
+            ],
+            "forcedInclude": [
+                "-Wall",
+                "-ffreestanding"
+            ],
+            "defines": [
+                "BUILD_VERSION=zephyr-v2.1.0-581-g4e135d76a3c2",
+                "KERNEL",
+                "NRF52832_XXAA",
+                "_FORTIFY_SOURCE=2",
+                "__PROGRAM_START",
+                "__ZEPHYR__=1"
+            ],
+            "compilerPath": "C:\\gnuarmemb\\bin\\arm-none-eabi-gcc.exe",
+            "cStandard": "c99",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}
