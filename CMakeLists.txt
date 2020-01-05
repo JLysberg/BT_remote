@@ -6,7 +6,7 @@ project(peripheral)
 
 target_sources(app PRIVATE
   src/main.c
-  src/cts.c
+  src/lcs.c
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
