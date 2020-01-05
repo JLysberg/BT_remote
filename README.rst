@@ -1,6 +1,6 @@
-.. _BT_servo:
+.. _BT_remote:
 
-BT servo
+BT remote
 #####################
 
 Overview
