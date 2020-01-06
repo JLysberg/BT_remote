@@ -12,6 +12,13 @@
         "kernel.h": "c",
         "byteorder.h": "c",
         "cts.h": "c",
-        "settings.h": "c"
+        "settings.h": "c",
+        "pwm.h": "c",
+        "lcs.h": "c",
+        "gatt.h": "c",
+        "uuid.h": "c",
+        "printk.h": "c",
+        "stddef.h": "c",
+        "device.h": "c"
     }
 }

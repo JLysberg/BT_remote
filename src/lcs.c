@@ -27,10 +27,7 @@ static struct bt_uuid_128 lcs_dim_uuid = BT_UUID_INIT_128(
 	0x36, 0xa4, 0x21, 0xa3, 0xa5, 0xd4, 0x4a, 0xdc,
     0x8e, 0x4a, 0xf6, 0x5d, 0x02, 0xf7, 0x3c, 0x67);
 
-static u8_t lcs_pow_value = 0;
 static u8_t lcs_pow_value_update = 0;
-
-static u8_t lcs_dim_value = 0;
 static u8_t lcs_dim_value_update = 0;
 
 static void lcs_pow_value_ccc_cfg_changed(const struct bt_gatt_attr *attr, u16_t value)
@@ -89,6 +86,8 @@ static ssize_t write_lcs_dim(struct bt_conn *conn, const struct bt_gatt_attr *at
 	}
 
 	memcpy(value + offset, buf, len);
+
+	printk("Written to dim: %d\n", 256 * lcs_dim_value[0] + lcs_dim_value[1]);
 
     lcs_dim_value_update = 1;
 

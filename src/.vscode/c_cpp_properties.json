@@ -16,7 +16,7 @@
                 "C:/Users/joste/zephyrproject/zephyr/subsys/bluetooth",
                 "C:/Users/joste/zephyrproject/zephyr/subsys/bluetooth/controller/ll_sw/nordic",
                 "C:/Users/joste/zephyrproject/zephyr/subsys/settings/include",
-                "zephyr/include/generated"
+                "C:/Users/joste/zephyrproject/projects/Personal/BT_remote/build/zephyr/include/generated"
             ],
             "forcedInclude": [
                 "-Wall",
@@ -30,7 +30,7 @@
                 "__PROGRAM_START",
                 "__ZEPHYR__=1"
             ],
-            "compilerPath": "C:\\gnuarmemb\\bin\\arm-none-eabi-gcc.exe",
+            "compilerPath": "C:/gnuarmemb/bin/arm-none-eabi-gcc.exe",
             "cStandard": "c99",
             "cppStandard": "c++17",
             "intelliSenseMode": "${default}"

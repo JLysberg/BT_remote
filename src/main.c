@@ -22,7 +22,23 @@
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
 
+#include <device.h>
+#include <drivers/pwm.h>
+
 #include "lcs.h"
+
+#if defined(DT_ALIAS_PWM_LED0_PWMS_CONTROLLER) && defined(DT_ALIAS_PWM_LED0_PWMS_CHANNEL)
+/* get the defines from dt (based on alias 'pwm-led0') */
+#define PWM_DRIVER	DT_ALIAS_PWM_LED0_PWMS_CONTROLLER
+#define PWM_CHANNEL	DT_ALIAS_PWM_LED0_PWMS_CHANNEL
+#else
+#error "Choose supported PWM driver"
+#endif
+
+/* Servo specifications, in microseconds*/
+#define MIN_PULSE	17.5 * USEC_PER_MSEC
+#define MAX_PULSE	19.5 * USEC_PER_MSEC
+#define PERIOD	20U * USEC_PER_MSEC
 
 #define MAX_DATA 74
 
@@ -99,6 +115,18 @@ static struct bt_conn_auth_cb auth_cb_display = {
 
 void main(void)
 {
+	struct device *pwm_dev;
+	u32_t min_pulse = MIN_PULSE;
+	u32_t max_pulse = MAX_PULSE;
+	u32_t period = PERIOD;
+	u32_t pulse;
+
+	pwm_dev = device_get_binding(PWM_DRIVER);
+	if (!pwm_dev) {
+		printk("Cannot find %s!\n", PWM_DRIVER);
+		return;
+	}
+
 	int err;
 
 	err = bt_enable(NULL);
@@ -114,11 +142,18 @@ void main(void)
 
 	bt_set_name("BT remote");
 
+	/*if (pwm_pin_set_usec(pwm_dev, PWM_CHANNEL, period, max_pulse)) {
+		printk("pwm pin set fails\n");
+		return;
+	}*/
+
 	/* Implement notification. At the moment there is no suitable way
 	 * of starting delayed work so we do it here
-	 */
+	 */	
 	while (1) {
 		k_sleep(MSEC_PER_SEC);
+		
+		printk("Dim: %d\n", 256 * lcs_dim_value[0] + lcs_dim_value[1]);
 
 		/* Light Control Service updates only when value is changed */
 		lcs_dim_notify();
