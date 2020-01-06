@@ -113,6 +113,10 @@ static struct bt_conn_auth_cb auth_cb_display = {
 	.cancel = auth_cancel,
 };
 
+u16_t deg_to_PWM_pulse(u8_t deg) {
+	return 17500U + 11U * deg;
+}
+
 void main(void)
 {
 	struct device *pwm_dev;
@@ -142,18 +146,20 @@ void main(void)
 
 	bt_set_name("BT remote");
 
-	/*if (pwm_pin_set_usec(pwm_dev, PWM_CHANNEL, period, max_pulse)) {
-		printk("pwm pin set fails\n");
-		return;
-	}*/
-
+	u8_t* dim;
 	/* Implement notification. At the moment there is no suitable way
 	 * of starting delayed work so we do it here
 	 */	
 	while (1) {
 		k_sleep(MSEC_PER_SEC);
 		
-		printk("Dim: %d\n", 256 * lcs_dim_value[0] + lcs_dim_value[1]);
+		dim = get_dim_value();
+		printk("Dim in deg: %d\tDim in pulse: %d\n", *dim, deg_to_PWM_pulse(*dim));
+
+		if (pwm_pin_set_usec(pwm_dev, PWM_CHANNEL, period, deg_to_PWM_pulse(*dim))) {
+			printk("pwm pin set fails\n");
+			return;
+		}
 
 		/* Light Control Service updates only when value is changed */
 		lcs_dim_notify();

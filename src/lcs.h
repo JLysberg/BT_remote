@@ -1,8 +1,9 @@
 #ifndef LCS_H
 #define LCS_H
 
-static u8_t lcs_pow_value[] = {0x00, 0x00};
-static u8_t lcs_dim_value[] = {0x03, 0xE8};
+u8_t* get_pow_value(void);
+
+u8_t* get_dim_value(void);
 
 void lcs_pow_notify(void);
 

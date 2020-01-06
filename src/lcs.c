@@ -29,6 +29,16 @@ static struct bt_uuid_128 lcs_dim_uuid = BT_UUID_INIT_128(
 
 static u8_t lcs_pow_value_update = 0;
 static u8_t lcs_dim_value_update = 0;
+static u8_t lcs_pow_value[] = {0x00};
+static u8_t lcs_dim_value[] = {0x00};
+
+u8_t* get_pow_value(void) {
+	return lcs_pow_value;
+}
+
+u8_t* get_dim_value(void) {
+	return lcs_dim_value;
+}
 
 static void lcs_pow_value_ccc_cfg_changed(const struct bt_gatt_attr *attr, u16_t value)
 {
