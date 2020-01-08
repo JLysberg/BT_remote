@@ -113,17 +113,17 @@ static struct bt_conn_auth_cb auth_cb_display = {
 	.cancel = auth_cancel,
 };
 
-u16_t deg_to_PWM_pulse(u8_t deg) {
-	return 17500U + 11U * deg;
+u32_t deg_to_PWM_pulse(u8_t deg) {
+	u32_t pulse = 17500U + 11U * deg;
+	if (pulse < MIN_PULSE) pulse = MIN_PULSE;
+	if (pulse > MAX_PULSE) pulse = MAX_PULSE;
+	return pulse;
 }
 
 void main(void)
 {
 	struct device *pwm_dev;
-	u32_t min_pulse = MIN_PULSE;
-	u32_t max_pulse = MAX_PULSE;
 	u32_t period = PERIOD;
-	u32_t pulse;
 
 	pwm_dev = device_get_binding(PWM_DRIVER);
 	if (!pwm_dev) {
@@ -154,8 +154,6 @@ void main(void)
 		k_sleep(MSEC_PER_SEC);
 		
 		dim = get_dim_value();
-		printk("Dim in deg: %d\tDim in pulse: %d\n", *dim, deg_to_PWM_pulse(*dim));
-
 		if (pwm_pin_set_usec(pwm_dev, PWM_CHANNEL, period, deg_to_PWM_pulse(*dim))) {
 			printk("pwm pin set fails\n");
 			return;

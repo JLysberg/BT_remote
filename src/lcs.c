@@ -23,14 +23,26 @@ static struct bt_uuid_128 lcs_pow_uuid = BT_UUID_INIT_128(
 	0x36, 0xa4, 0x21, 0xa3, 0xa5, 0xd4, 0x4a, 0xdc,
     0x8e, 0x4a, 0xf6, 0x5d, 0x01, 0xf7, 0x3c, 0x67);
 
-static struct bt_uuid_128 lcs_dim_uuid = BT_UUID_INIT_128(
+static struct bt_uuid_128 lcs_pow_desc_uuid = BT_UUID_INIT_128(
 	0x36, 0xa4, 0x21, 0xa3, 0xa5, 0xd4, 0x4a, 0xdc,
     0x8e, 0x4a, 0xf6, 0x5d, 0x02, 0xf7, 0x3c, 0x67);
 
+static struct bt_uuid_128 lcs_dim_uuid = BT_UUID_INIT_128(
+	0x36, 0xa4, 0x21, 0xa3, 0xa5, 0xd4, 0x4a, 0xdc,
+    0x8e, 0x4a, 0xf6, 0x5d, 0x03, 0xf7, 0x3c, 0x67);
+
+static struct bt_uuid_128 lcs_dim_desc_uuid = BT_UUID_INIT_128(
+	0x36, 0xa4, 0x21, 0xa3, 0xa5, 0xd4, 0x4a, 0xdc,
+    0x8e, 0x4a, 0xf6, 0x5d, 0x04, 0xf7, 0x3c, 0x67);
+
 static u8_t lcs_pow_value_update = 0;
 static u8_t lcs_dim_value_update = 0;
+
 static u8_t lcs_pow_value[] = {0x00};
 static u8_t lcs_dim_value[] = {0x00};
+
+static u8_t lcs_pow_desc[] = {'P', 'o', 'w', 'e', 'r', '\0'};
+static u8_t lcs_dim_desc[] = {'D', 'i', 'm', 'm', 'e', 'r', '\0'};
 
 u8_t* get_pow_value(void) {
 	return lcs_pow_value;
@@ -97,8 +109,6 @@ static ssize_t write_lcs_dim(struct bt_conn *conn, const struct bt_gatt_attr *at
 
 	memcpy(value + offset, buf, len);
 
-	printk("Written to dim: %d\n", 256 * lcs_dim_value[0] + lcs_dim_value[1]);
-
     lcs_dim_value_update = 1;
 
 	return len;
@@ -112,11 +122,13 @@ BT_GATT_SERVICE_DEFINE(lcs_svc,
 			       BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
 			       read_lcs_pow, write_lcs_pow, &lcs_pow_value),
 	BT_GATT_CCC(lcs_pow_value_ccc_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+	BT_GATT_CUD(lcs_pow_desc, BT_GATT_PERM_READ),
 	BT_GATT_CHARACTERISTIC(&lcs_dim_uuid.uuid, BT_GATT_CHRC_READ |
 			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
 			       read_lcs_dim, write_lcs_dim, &lcs_dim_value),
 	BT_GATT_CCC(lcs_dim_value_ccc_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+	BT_GATT_CUD(lcs_dim_desc, BT_GATT_PERM_READ),
 );
 
 void lcs_pow_notify(void) {
@@ -136,5 +148,5 @@ void lcs_dim_notify(void) {
 
     lcs_dim_value_update = 0;
 
-    bt_gatt_notify(NULL, &lcs_svc.attrs[3], &lcs_dim_value, sizeof(lcs_dim_value));
+    bt_gatt_notify(NULL, &lcs_svc.attrs[4], &lcs_dim_value, sizeof(lcs_dim_value));
 }
