@@ -25,7 +25,8 @@
 #include <device.h>
 #include <drivers/pwm.h>
 
-#include "lcs.h"
+#include "lcs.h" //Light control service
+#include "cts.h" //Current time service
 
 #if defined(DT_ALIAS_PWM_LED0_PWMS_CONTROLLER) && defined(DT_ALIAS_PWM_LED0_PWMS_CHANNEL)
 /* get the defines from dt (based on alias 'pwm-led0') */
@@ -87,6 +88,11 @@ static void bt_ready(void)
 	}
 
 	printk("Advertising successfully started\n");
+
+	err = cts_init();
+	if (err) {
+		return;
+	}
 }
 
 static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
@@ -159,8 +165,11 @@ void main(void)
 			return;
 		}
 
+		print_ct();
+
 		/* Light Control Service updates only when value is changed */
 		lcs_dim_notify();
 		lcs_pow_notify();
+		cts_notify();
 	}
 }
