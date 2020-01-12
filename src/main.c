@@ -159,7 +159,6 @@ void main(void)
 	while (1) {
 		k_sleep(MSEC_PER_SEC);
 		
-		dim = get_dim_value();
 		if (pwm_pin_set_usec(pwm_dev, PWM_CHANNEL, period, deg_to_PWM_pulse(*dim))) {
 			printk("pwm pin set fails\n");
 			return;
@@ -167,9 +166,7 @@ void main(void)
 
 		print_ct();
 
-		/* Light Control Service updates only when value is changed */
-		lcs_dim_notify();
-		lcs_pow_notify();
+		/* Notify on time change if enabled */
 		cts_notify();
 	}
 }
