@@ -22,24 +22,9 @@
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
 
-#include <device.h>
-#include <drivers/pwm.h>
-
-#include "lcs.h" //Light control service
-#include "cts.h" //Current time service
-
-#if defined(DT_ALIAS_PWM_LED0_PWMS_CONTROLLER) && defined(DT_ALIAS_PWM_LED0_PWMS_CHANNEL)
-/* get the defines from dt (based on alias 'pwm-led0') */
-#define PWM_DRIVER	DT_ALIAS_PWM_LED0_PWMS_CONTROLLER
-#define PWM_CHANNEL	DT_ALIAS_PWM_LED0_PWMS_CHANNEL
-#else
-#error "Choose supported PWM driver"
-#endif
-
-/* Servo specifications, in microseconds*/
-#define MIN_PULSE	17.5 * USEC_PER_MSEC
-#define MAX_PULSE	19.5 * USEC_PER_MSEC
-#define PERIOD	20U * USEC_PER_MSEC
+#include "als.h"	// Alarm service
+#include "cts.h"	// Current time service
+#include "lcs.h"	// Light control service
 
 #define MAX_DATA 74
 
@@ -88,11 +73,6 @@ static void bt_ready(void)
 	}
 
 	printk("Advertising successfully started\n");
-
-	err = cts_init();
-	if (err) {
-		return;
-	}
 }
 
 static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
@@ -119,31 +99,17 @@ static struct bt_conn_auth_cb auth_cb_display = {
 	.cancel = auth_cancel,
 };
 
-u32_t deg_to_PWM_pulse(u8_t deg) {
-	u32_t pulse = 17500U + 11U * deg;
-	if (pulse < MIN_PULSE) pulse = MIN_PULSE;
-	if (pulse > MAX_PULSE) pulse = MAX_PULSE;
-	return pulse;
-}
-
 void main(void)
 {
-	struct device *pwm_dev;
-	u32_t period = PERIOD;
-
-	pwm_dev = device_get_binding(PWM_DRIVER);
-	if (!pwm_dev) {
-		printk("Cannot find %s!\n", PWM_DRIVER);
-		return;
-	}
-
-	int err;
-
-	err = bt_enable(NULL);
+	int err = bt_enable(NULL);
 	if (err) {
 		printk("Bluetooth init failed (err %d)\n", err);
 		return;
 	}
+
+	ds_init();
+	cts_init();
+	als_init();
 
 	bt_ready();
 
@@ -152,21 +118,16 @@ void main(void)
 
 	bt_set_name("BT remote");
 
-	u8_t* dim;
-	/* Implement notification. At the moment there is no suitable way
-	 * of starting delayed work so we do it here
-	 */	
 	while (1) {
 		k_sleep(MSEC_PER_SEC);
-		
-		if (pwm_pin_set_usec(pwm_dev, PWM_CHANNEL, period, deg_to_PWM_pulse(*dim))) {
-			printk("pwm pin set fails\n");
-			return;
-		}
 
-		print_ct();
+		cts_print_ct();
 
-		/* Notify on time change if enabled */
+		/*Notify on dim/pow value change and update pwm*/
+		lcs_dim_notify();
+		lcs_pow_notify();
+
+		/* Notify on time change */
 		cts_notify();
 	}
 }
